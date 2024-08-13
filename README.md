@@ -1,6 +1,6 @@
 # CDA PROD
 
-Mono repo pour la consecption et le dévelopement d'applicaton web.
+Mono repo pour la conception et le développement d'application web.
 
 ```
 .
@@ -29,8 +29,6 @@ Mono repo pour la consecption et le dévelopement d'applicaton web.
 ```
 
 ## cheat sheet
-
-dev. multiple app mono repo folder
 
 - workspaces
 
