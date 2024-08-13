@@ -1,0 +1,17 @@
+#!/usr/bin/env -S "${SHELL}" --posix
+
+###
+# add line command in script root for set env.
+#
+#	#!/usr/bin/env -S pkexec "${SHELL}" --posix
+# . "$(dirname ${0})/cda_env"
+#
+###
+
+export PATH="`dirname ${0}`:$PATH"
+
+. cda_color_api
+
+#var env
+export etchosts="/etc/hosts"
+export preffixhttpdconf="CDA_"

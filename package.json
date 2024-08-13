@@ -1,0 +1,10 @@
+{
+  "name": "cda_prod",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "cda",
+    "packages/**/*",
+    "projects/**/*"
+  ]
+}

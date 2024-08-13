@@ -1,0 +1,161 @@
+#!/usr/bin/env sh
+
+if [ "${1}" == "" ]
+then
+    printf "arg empty.\n"
+    printf "exemple: command DomainNameServer (.ext)\n"
+    exit 0
+fi
+
+iplocal=$(hostname -I | cut -d' ' -f1)
+ca_did="CA"
+default_days=3650
+
+create_ca()
+{
+    openssl req -x509 -noenc                                    \
+                -days "$default_days"                           \
+                -config "${ca_did}/root-ca/root-ca.conf"        \
+                -keyout "${ca_did}/root-ca/root-ca.key"         \
+                -out "${ca_did}/root-ca/root-ca.crt"            \
+                -extensions ca_ext
+}
+
+request_csr()
+{
+    openssl req -new -noenc                                     \
+                -config "${ca_did}/${1}/${1}.conf"              \
+                -keyout "${ca_did}/${1}/${1}.key"               \
+                -out "${ca_did}/${1}/${1}.csr"                  \
+                -extensions ext
+}
+
+gen_cert()
+{
+    openssl x509 -req                                           \
+                 -CA "${ca_did}/root-ca/root-ca.crt"            \
+                 -CAkey "${ca_did}/root-ca/root-ca.key"         \
+                 -in "${ca_did}/${1}/${1}.csr"                  \
+                 -out "${ca_did}/${1}/${1}.crt"                 \
+                 -days "$default_days"                          \
+                 -CAcreateserial                                \
+                 -copy_extensions copyall                       \
+                 -extfile "${ca_did}/root-ca/root-ca.conf"      \
+                 -extensions server_ext
+}
+
+root_ca_conf()
+{
+    printf "[default]
+name                    = root-ca
+default_ca              = ca_default
+name_opt                = utf8,esc_ctrl,multiline,lname,align
+
+[ca_dn]
+countryName             = FR
+stateOrProvinceName     = Ardeche
+localityName            = Meysse
+organizationName        = \"Dev Web root_CA\"
+organizationalUnitName  = DW
+commonName              = \$name
+emailAddress            = webmaster@\$name
+
+[ca_default]
+unique_subject          = no
+default_days            = ${default_days}
+default_md              = sha512
+
+[req]
+default_bits            = 4096
+encrypt_key             = yes
+default_md              = sha512
+utf8                    = yes
+string_mask             = utf8only
+prompt                  = no
+distinguished_name      = ca_dn
+req_extensions          = ca_ext
+
+[ca_ext]
+basicConstraints        = critical,CA:true
+keyUsage                = critical,keyCertSign,cRLSign
+subjectKeyIdentifier    = hash
+
+[server_ext]
+authorityKeyIdentifier  = keyid,issuer
+basicConstraints        = critical,CA:false
+keyUsage                = critical,digitalSignature,keyEncipherment
+extendedKeyUsage        = clientAuth,serverAuth
+subjectKeyIdentifier    = hash
+" > "${1}"
+}
+
+server_conf()
+{
+    printf "[req]
+default_bits            = 4096
+encrypt_key             = yes
+default_md              = sha512
+utf8                    = yes
+string_mask             = utf8only
+prompt                  = no
+distinguished_name      = dn
+req_extensions          = ext
+
+[dn]
+countryName             = FR
+stateOrProvinceName     = Ardeche
+localityName            = Meysse
+organizationName        = \"Dev Web ${1}\"
+organizationalUnitName  = DW
+commonName              = ${1}
+emailAddress            = webmaster@${1}
+
+[ext]
+subjectAltName          = @alt_names
+basicConstraints        = critical,CA:false
+keyUsage                = critical,digitalSignature,keyEncipherment
+extendedKeyUsage        = clientAuth,serverAuth
+subjectKeyIdentifier    = hash
+
+[alt_names]
+DNS.1                   = ${1}
+DNS.2                   = www.${1}
+IP.0                    = 127.0.0.1
+IP.1                    = ${iplocal}" > "${ca_did}/${1}/${1}.conf"
+}
+
+###
+# CA
+##
+if [ ! -d "${ca_did}/root-ca" ]
+then
+    mkdir "${ca_did}" "${ca_did}/root-ca"
+    wait $!
+    root_ca_conf "${ca_did}/root-ca/root-ca.conf"
+    wait $!
+fi
+
+if [ ! -f "${ca_did}/root-ca/root-ca.crt" ]
+then
+    create_ca
+    wait $!
+fi
+
+###
+# Server
+##
+if [ ! -d "${ca_did}/${1}" ]
+then
+    mkdir "${ca_did}/${1}"
+    wait $!
+    server_conf "${1}"
+    wait $!
+fi
+
+if [ ! -f "${ca_did}/${1}/${1}.crt" ]
+then
+    request_csr "${1}"
+    wait $!
+    gen_cert "${1}"
+    wait $!
+fi

@@ -1,0 +1,20 @@
+$base-color-primary: #FF6060
+
+@mixin font($size, $weight, $color)
+  font-size: $size
+  font-weight: $weight
+  color: $color
+
+.tag
+  background-color: $base-color-primary
+  width: 160px
+  padding: 0.5em
+  border-radius: 10px
+  text-align: center
+  margin: 1em
+
+  @include font(0.9em, 700, #ffffff)
+
+  @media (max-width: 700px)
+    font-size: 0.65em
+    width: 120px

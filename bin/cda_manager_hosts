@@ -1,0 +1,120 @@
+#!/usr/bin/env -S pkexec "${SHELL}" --posix
+
+# #!/usr/bin/env -S "${SHELL}" --posix
+
+. "$(dirname ${0})/cda_env"
+
+etchosts="/etc/hosts"
+
+positionBaner="0"
+
+initHost() {
+  baner="####### CDA PROD Domain Name Server #######"
+  banerEnd="####### END CDA ###########################"
+
+  testBaner=`sed -n -e "/${baner}/p" "${etchosts}"`
+
+  if [ "${testBaner}" == "" ]
+  then
+    printf "\n%s\n\n" "$baner" >> $etchosts
+    printf "%s\n\n" "$banerEnd" >> $etchosts
+  fi
+
+  # sed -e "/line/p" "${etchosts}"
+  positionBaner="`sed -n -e "/${baner}/=" "${etchosts}"`"
+
+  
+}
+initHost
+
+usage() {
+  cda_title "Usage" "${yellow_fg}"
+  printf "Utilisation: $(basename ${0}) [OPTION] [NameDomainServer(sans ext)]\n"
+  printf "Manager hosts file ${etchosts}\n\n"
+  printf "Les arguments obligatoires pour les options longues le sont aussi pour les
+options courtes.\n"
+  printf "  -c --create add host\n"
+  printf "  -r --read affiche la list hosts\n"
+  printf "  -u --update ???\n"
+  printf "  -d --deleted delete host\n"
+  exit 0
+}
+
+if [ "${1}" == "" ] || [ "${2}" == "" ]
+then
+  cda_title "Error" "${red_fg}"
+  printf "arg empty.\n"
+  usage
+fi
+
+is_exist_host_name="`sed -n -e "/${2}.test/p" "${etchosts}"`"
+
+createHost() {
+  cda_title "Create Host"
+
+  if [ "${is_exist_host_name}" == "" ]
+  then
+    position=$((positionBaner + 1))
+    sed -i "${position}i127.0.0.1   ${1}.test www.${1}.test" "${etchosts}"
+    # printf "127.0.0.1   %s.test www.%s.test\n" "${1}" "${1}" >> "${etchosts}"
+    printf "host added in ${etchosts}\n"
+    printf "127.0.0.1   %s.test www.%s.test\n" "${1}" "${1}"
+  else
+    printf "hosts name existing in ${etchosts}.\n%s\n" "${is_exist_host_name}"
+  fi
+}
+
+readHost() {
+  cda_title "Read Host"
+
+  if [ "${is_exist_host_name}" == "" ]
+  then
+      printf "host not exist.\n"
+  else
+    printf "hosts name existing.\n%s\n" "${is_exist_host_name}"
+  fi
+}
+
+# updateHost() {
+
+# }
+
+deletedHost() {
+  cda_title "Deleted Host"
+
+  if [ "${is_exist_host_name}" == "" ]
+  then
+      printf "host not exist.\n"
+      exit 0
+  fi
+
+  sed -i -e "/${is_exist_host_name}/d" "${etchosts}"
+  printf "host deleted in ${etchosts}\n"
+  printf "127.0.0.1   %s.test www.%s.test\n" "${1}" "${1}"
+}
+
+# createHost "$1"
+
+# for i in ${@}
+# do
+	case "$1" in
+		-h) usage "$2";;
+		-c) createHost "$2";;
+		-r) readHost "$2";;
+		# -u) updateHost;;
+		-d) deletedHost "$2";;
+		*) usage;; 
+	esac 
+# done
+
+
+# sed
+
+# deleted line with regex
+# sed -i -e "/${is_exist_host_name}/d" "${etchosts}"
+
+# add line with position
+# sed -i '3iline 3' "${etchosts}"
+
+# get line with regex
+# sed -n -e "/${baner}/=" "${etchosts}"

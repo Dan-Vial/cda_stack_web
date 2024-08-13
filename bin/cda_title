@@ -1,0 +1,29 @@
+#!/usr/bin/env -S "${SHELL}" --posix
+
+if [ "${1}" == "" ]
+then
+    cda_title "Error" "${red_fg}"
+    printf "arg empty.\n"
+    printf "exemple: $(basename ${0}) MyTitle\n"
+    exit 0
+fi
+
+color=${2}
+
+if [ "${2}" == "" ]
+then
+    color=${blue_fg}
+fi
+
+cols=$((`tput cols`))
+len=${#1}
+
+left=$((($cols-$len)/2))
+
+rep (){ printf -- "$1\e[$(($2-1))b"; }
+
+printf "${color}\n"
+rep "#" "$cols"
+printf -- " \e[$(($left-1))b${1}\n"
+printf "${reset_color}"
+

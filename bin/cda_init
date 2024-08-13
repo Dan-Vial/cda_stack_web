@@ -1,0 +1,46 @@
+#!/usr/bin/env -S "${SHELL}" --posix
+
+clear
+
+reset_c="\[\033[0m\]"
+gray="\[\033[38:5:8m\]"
+red="\[\033[38:5:9m\]"
+green="\[\033[38:5:10m\]"
+yellow="\[\033[38:5:11m\]"
+blue="\[\033[38:5:12m\]"
+violet="\[\033[38:5:13m\]"
+
+blueBG="\[\033[48:5:14m\]"
+
+cl="${red}[${green}"
+cr="${red}]${reset_c}"
+a="${yellow}@"
+text="${gray}${blueBG}DEV${reset_c}"
+
+export PS1="${cl}\D{%d/%m/%Y %H:%M:%S} ${text} ${violet}\u${a}\h ${blue}\W${cr}\$ "
+export PATH="`pwd`/bin:$PATH"
+
+. cda_color_api
+
+vAll() {
+  printf "${1} node: %s" `node -v`
+  printf " | npm: %s\n" `npm -v`
+}
+
+cda_title "Version"
+printf "${blue_fg}${yellow_bright_bg}CDA     =>${reset_color} v1.0.0\n"
+vAll "${red_fg}${yellow_bright_bg}System  =>${reset_color}"
+
+export PATH="`pwd`/node_modules/node/bin:`pwd`/node_modules/.bin:$PATH"
+
+# dv_new_project_web
+
+# dv_title "code ."
+# code .
+
+###
+vAll "${green_fg}${yellow_bright_bg}Project =>${reset_color}"
+
+###
+bash
+

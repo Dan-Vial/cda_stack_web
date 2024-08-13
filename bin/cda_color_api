@@ -1,0 +1,92 @@
+#!/usr/bin/env -S "${SHELL}" --posix
+
+###
+# https://en.wikipedia.org/wiki/ANSI_escape_code#256_color_table
+##
+
+if [ "${1}" == "-l" ]
+then
+  cda_title "colors"
+  printf "${black_fg}black_fg${reset_color}\n"
+  printf "${black_bg}black_bg${reset_color}\n"
+  printf "${black_bright_fg}black_bright_fg${reset_color}\n"
+  printf "${black_bright_bg}black_bright_bg${reset_color}\n"
+
+  printf "${red_fg}red_fg${reset_color}\n"
+  printf "${red_bg}red_bg${reset_color}\n"
+  printf "${red_bright_fg}red_bright_fg${reset_color}\n"
+  printf "${red_bright_bg}red_bright_bg${reset_color}\n"
+  
+  printf "${green_fg}green_fg${reset_color}\n"
+  printf "${green_bg}green_bg${reset_color}\n"
+  printf "${green_bright_fg}green_bright_fg${reset_color}\n"
+  printf "${green_bright_bg}green_bright_bg${reset_color}\n"
+  
+  printf "${yellow_fg}yellow_fg${reset_color}\n"
+  printf "${yellow_bg}yellow_bg${reset_color}\n"
+  printf "${yellow_bright_fg}yellow_bright_fg${reset_color}\n"
+  printf "${yellow_bright_bg}yellow_bright_bg${reset_color}\n"
+  
+  printf "${blue_fg}blue_fg${reset_color}\n"
+  printf "${blue_bg}blue_bg${reset_color}\n"
+  printf "${blue_bright_fg}blue_bright_fg${reset_color}\n"
+  printf "${blue_bright_bg}blue_bright_bg${reset_color}\n"
+
+  printf "${magenta_fg}magenta_fg${reset_color}\n"
+  printf "${magenta_bg}magenta_bg${reset_color}\n"
+  printf "${magenta_bright_fg}magenta_bright_fg${reset_color}\n"
+  printf "${magenta_bright_bg}magenta_bright_bg${reset_color}\n"
+
+  printf "${cyan_fg}cyan_fg${reset_color}\n"
+  printf "${cyan_bg}cyan_bg${reset_color}\n"
+  printf "${cyan_bright_fg}cyan_bright_fg${reset_color}\n"
+  printf "${cyan_bright_bg}cyan_bright_bg${reset_color}\n"
+
+  printf "${white_fg}white_fg${reset_color}\n"
+  printf "${white_bg}white_bg${reset_color}\n"
+  printf "${white_bright_fg}white_bright_fg${reset_color}\n"
+  printf "${white_bright_bg}white_bright_bg${reset_color}\n"
+
+  exit 0
+fi
+
+export black_fg="\033[30m"
+export red_fg="\033[31m"
+export green_fg="\033[32m"
+export yellow_fg="\033[33m"
+export blue_fg="\033[34m"
+export magenta_fg="\033[35m"
+export cyan_fg="\033[36m"
+export white_fg="\033[37m"
+
+export black_bg="\033[40m"
+export red_bg="\033[41m"
+export green_bg="\033[42m"
+export yellow_bg="\033[43m"
+export blue_bg="\033[44m"
+export magenta_bg="\033[45m"
+export cyan_bg="\033[46m"
+export white_bg="\033[47m"
+
+export black_bright_fg="\033[90m"
+export red_bright_fg="\033[91m"
+export green_bright_fg="\033[92m"
+export yellow_bright_fg="\033[93m"
+export blue_bright_fg="\033[94m"
+export magenta_bright_fg="\033[95m"
+export cyan_bright_fg="\033[96m"
+export white_bright_fg="\033[97m"
+
+export black_bright_bg="\033[100m"
+export red_bright_bg="\033[101m"
+export green_bright_bg="\033[102m"
+export yellow_bright_bg="\033[103m"
+export blue_bright_bg="\033[104m"
+export magenta_bright_bg="\033[105m"
+export cyan_bright_bg="\033[106m"
+export white_bright_bg="\033[107m"
+
+export reset_color="\033[0m"
+
+
+#printf "${red_bright_bg}${black_bright_fg}%s${reset_color}\n" "test"

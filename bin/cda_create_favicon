@@ -1,0 +1,12 @@
+#!/usr/bin/env -S "${SHELL}" --posix
+
+if [ "${1}" == "" ]
+then
+		cda_title "Error" "${red_fg}"
+    printf "arg empty.\n"
+    printf "exemple: $(basename ${0}) image.png\n"
+    exit 0
+fi
+
+magick -density 1024 -background none "${1}" -define icon:auto-resize favicon.ico
+
